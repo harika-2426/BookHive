@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>LibraCore</title>
+
+    <link
+        rel="stylesheet"
+        href="/static/style.css"
+    >
+
+</head>
+
+<body>
+
+<div class="app">
+
+    <!-- SIDEBAR -->
+
+    <aside class="sidebar">
+
+        <div class="logo">
+            LibraCore
+            <span>Library Management</span>
+        </div>
+
+        <button onclick="showPage('dashboard')">
+            Dashboard
+        </button>
+
+        <button onclick="showPage('books')">
+            Books
+        </button>
+
+        <button onclick="showPage('members')">
+            Members
+        </button>
+
+        <button onclick="showPage('issue')">
+            Issue Book
+        </button>
+
+        <button onclick="showPage('return')">
+            Return Book
+        </button>
+
+        <button onclick="showPage('waitlists')">
+            Waitlists
+        </button>
+
+        <button onclick="showPage('transactions')">
+            Transactions
+        </button>
+
+    </aside>
+
+
+    <!-- MAIN -->
+
+    <main class="main">
+
+        <header>
+
+            <div>
+                <h1 id="pageTitle">
+                    Dashboard
+                </h1>
+
+                <p>
+                    Mini Library Management System
+                </p>
+            </div>
+
+            <div class="status">
+                System Online
+            </div>
+
+        </header>
+
+
+        <!-- DASHBOARD -->
+
+        <section id="dashboard" class="page active">
+
+            <div class="cards">
+
+                <div class="card">
+                    <span>Total Books</span>
+                    <strong id="totalBooks">0</strong>
+                </div>
+
+                <div class="card">
+                    <span>Available</span>
+                    <strong id="availableBooks">0</strong>
+                </div>
+
+                <div class="card">
+                    <span>Issued</span>
+                    <strong id="issuedBooks">0</strong>
+                </div>
+
+                <div class="card">
+                    <span>Members</span>
+                    <strong id="totalMembers">0</strong>
+                </div>
+
+                <div class="card">
+                    <span>Waitlist</span>
+                    <strong id="waitlistCount">0</strong>
+                </div>
+
+            </div>
+
+            <div class="panel">
+
+                <h2>Quick Actions</h2>
+
+                <div class="actions">
+
+                    <button onclick="showPage('books')">
+                        Manage Books
+                    </button>
+
+                    <button onclick="showPage('members')">
+                        Manage Members
+                    </button>
+
+                    <button onclick="showPage('issue')">
+                        Issue Book
+                    </button>
+
+                    <button onclick="showPage('return')">
+                        Return Book
+                    </button>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- BOOKS -->
+
+        <section id="books" class="page">
+
+            <div class="panel">
+
+                <div class="panel-header">
+
+                    <h2>Books</h2>
+
+                    <button onclick="openModal('bookModal')">
+                        Add Book
+                    </button>
+
+                </div>
+
+                <input
+                    id="bookSearch"
+                    class="search"
+                    placeholder="Search by ID, title or author..."
+                    oninput="loadBooks()"
+                >
+
+                <div class="table-container">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+                                <th>ID</th>
+                                <th>Title</th>
+                                <th>Author</th>
+                                <th>Status</th>
+                            </tr>
+
+                        </thead>
+
+                        <tbody id="booksTable"></tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- MEMBERS -->
+
+        <section id="members" class="page">
+
+            <div class="panel">
+
+                <div class="panel-header">
+
+                    <h2>Members</h2>
+
+                    <button onclick="openModal('memberModal')">
+                        Register Member
+                    </button>
+
+                </div>
+
+                <div class="table-container">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Borrowed Books</th>
+                            </tr>
+
+                        </thead>
+
+                        <tbody id="membersTable"></tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ISSUE -->
+
+        <section id="issue" class="page">
+
+            <div class="form-panel">
+
+                <h2>Issue Book</h2>
+
+                <form onsubmit="issueBook(event)">
+
+                    <label>Book ID</label>
+
+                    <input
+                        id="issueBookId"
+                        required
+                    >
+
+                    <label>Member ID</label>
+
+                    <input
+                        id="issueMemberId"
+                        required
+                    >
+
+                    <button type="submit">
+                        Issue Book
+                    </button>
+
+                </form>
+
+            </div>
+
+        </section>
+
+
+        <!-- RETURN -->
+
+        <section id="return" class="page">
+
+            <div class="form-panel">
+
+                <h2>Return Book</h2>
+
+                <form onsubmit="returnBook(event)">
+
+                    <label>Book ID</label>
+
+                    <input
+                        id="returnBookId"
+                        required
+                    >
+
+                    <label>Member ID</label>
+
+                    <input
+                        id="returnMemberId"
+                        required
+                    >
+
+                    <button type="submit">
+                        Return Book
+                    </button>
+
+                </form>
+
+            </div>
+
+        </section>
+
+
+        <!-- WAITLIST -->
+
+        <section id="waitlists" class="page">
+
+            <div class="panel">
+
+                <h2>Book Waitlists</h2>
+
+                <div class="table-container">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+                                <th>Position</th>
+                                <th>Book</th>
+                                <th>Member</th>
+                            </tr>
+
+                        </thead>
+
+                        <tbody id="waitlistTable"></tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- TRANSACTIONS -->
+
+        <section id="transactions" class="page">
+
+            <div class="panel">
+
+                <h2>Transaction History</h2>
+
+                <p class="info">
+                    Latest transactions appear first because
+                    the system uses a Stack.
+                </p>
+
+                <div class="table-container">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+                                <th>Type</th>
+                                <th>Book ID</th>
+                                <th>Member ID</th>
+                                <th>Date</th>
+                            </tr>
+
+                        </thead>
+
+                        <tbody id="transactionsTable"></tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<!-- ADD BOOK MODAL -->
+
+<div id="bookModal" class="modal">
+
+    <div class="modal-box">
+
+        <h2>Add Book</h2>
+
+        <form onsubmit="addBook(event)">
+
+            <input
+                id="bookId"
+                placeholder="Book ID"
+                required
+            >
+
+            <input
+                id="bookTitle"
+                placeholder="Book Title"
+                required
+            >
+
+            <input
+                id="bookAuthor"
+                placeholder="Author"
+                required
+            >
+
+            <div class="modal-actions">
+
+                <button type="submit">
+                    Add Book
+                </button>
+
+                <button
+                    type="button"
+                    class="secondary"
+                    onclick="closeModal('bookModal')"
+                >
+                    Cancel
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<!-- MEMBER MODAL -->
+
+<div id="memberModal" class="modal">
+
+    <div class="modal-box">
+
+        <h2>Register Member</h2>
+
+        <form onsubmit="addMember(event)">
+
+            <input
+                id="memberId"
+                placeholder="Member ID"
+                required
+            >
+
+            <input
+                id="memberName"
+                placeholder="Member Name"
+                required
+            >
+
+            <div class="modal-actions">
+
+                <button type="submit">
+                    Register
+                </button>
+
+                <button
+                    type="button"
+                    class="secondary"
+                    onclick="closeModal('memberModal')"
+                >
+                    Cancel
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<div id="toast"></div>
+
+
+<script>
+
+const pageTitles = {
+
+    dashboard: "Dashboard",
+    books: "Books",
+    members: "Members",
+    issue: "Issue Book",
+    return: "Return Book",
+    waitlists: "Waitlists",
+    transactions: "Transactions"
+
+};
+
+
+function showPage(page) {
+
+    document
+        .querySelectorAll(".page")
+        .forEach(section => {
+
+            section.classList.remove("active");
+
+        });
+
+    document
+        .getElementById(page)
+        .classList.add("active");
+
+    document
+        .getElementById("pageTitle")
+        .textContent = pageTitles[page];
+
+    if (page === "dashboard")
+        loadStats();
+
+    if (page === "books")
+        loadBooks();
+
+    if (page === "members")
+        loadMembers();
+
+    if (page === "waitlists")
+        loadWaitlists();
+
+    if (page === "transactions")
+        loadTransactions();
+
+}
+
+
+function openModal(id) {
+
+    document
+        .getElementById(id)
+        .classList.add("show");
+
+}
+
+
+function closeModal(id) {
+
+    document
+        .getElementById(id)
+        .classList.remove("show");
+
+}
+
+
+function showMessage(message) {
+
+    const toast =
+        document.getElementById("toast");
+
+    toast.textContent = message;
+
+    toast.classList.add("show");
+
+    setTimeout(() => {
+
+        toast.classList.remove("show");
+
+    }, 3000);
+
+}
+
+
+/* =========================
+   DASHBOARD
+========================= */
+
+async function loadStats() {
+
+    const response =
+        await fetch("/api/stats");
+
+    const data =
+        await response.json();
+
+    document.getElementById(
+        "totalBooks"
+    ).textContent = data.total_books;
+
+    document.getElementById(
+        "availableBooks"
+    ).textContent = data.available_books;
+
+    document.getElementById(
+        "issuedBooks"
+    ).textContent = data.issued_books;
+
+    document.getElementById(
+        "totalMembers"
+    ).textContent = data.total_members;
+
+    document.getElementById(
+        "waitlistCount"
+    ).textContent = data.waitlist_count;
+
+}
+
+
+/* =========================
+   BOOKS
+========================= */
+
+async function loadBooks() {
+
+    const search =
+        document.getElementById(
+            "bookSearch"
+        ).value;
+
+    const response =
+        await fetch(
+            "/api/books?search=" +
+            encodeURIComponent(search)
+        );
+
+    const books =
+        await response.json();
+
+    const table =
+        document.getElementById(
+            "booksTable"
+        );
+
+    table.innerHTML = "";
+
+    books.forEach(book => {
+
+        const status =
+            book.available
+                ? "Available"
+                : "Issued";
+
+        const row =
+            document.createElement("tr");
+
+        row.innerHTML = `
+
+            <td>${book.book_id}</td>
+
+            <td>${book.title}</td>
+
+            <td>${book.author}</td>
+
+            <td>
+                <span class="badge ${book.available
+                    ? "available"
+                    : "issued"}">
+                    ${status}
+                </span>
+            </td>
+
+        `;
+
+        table.appendChild(row);
+
+    });
+
+}
+
+
+async function addBook(event) {
+
+    event.preventDefault();
+
+    const data = {
+
+        book_id:
+            document.getElementById(
+                "bookId"
+            ).value,
+
+        title:
+            document.getElementById(
+                "bookTitle"
+            ).value,
+
+        author:
+            document.getElementById(
+                "bookAuthor"
+            ).value
+
+    };
+
+    const response =
+        await fetch(
+            "/api/books",
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type":
+                        "application/json"
+                },
+
+                body: JSON.stringify(data)
+            }
+        );
+
+    const result =
+        await response.json();
+
+    showMessage(result.message);
+
+    if (result.success) {
+
+        document
+            .querySelector("#bookModal form")
+            .reset();
+
+        closeModal("bookModal");
+
+        loadBooks();
+        loadStats();
+
+    }
+
+}
+
+
+/* =========================
+   MEMBERS
+========================= */
+
+async function loadMembers() {
+
+    const response =
+        await fetch("/api/members");
+
+    const members =
+        await response.json();
+
+    const table =
+        document.getElementById(
+            "membersTable"
+        );
+
+    table.innerHTML = "";
+
+    members.forEach(member => {
+
+        const row =
+            document.createElement("tr");
+
+        row.innerHTML = `
+
+            <td>${member.member_id}</td>
+
+            <td>${member.name}</td>
+
+            <td>
+                ${
+                    member.borrowed_books.length
+                    ? member.borrowed_books.join(", ")
+                    : "None"
+                }
+            </td>
+
+        `;
+
+        table.appendChild(row);
+
+    });
+
+}
+
+
+async function addMember(event) {
+
+    event.preventDefault();
+
+    const data = {
+
+        member_id:
+            document.getElementById(
+                "memberId"
+            ).value,
+
+        name:
+            document.getElementById(
+                "memberName"
+            ).value
+
+    };
+
+    const response =
+        await fetch(
+            "/api/members",
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type":
+                        "application/json"
+                },
+
+                body: JSON.stringify(data)
+            }
+        );
+
+    const result =
+        await response.json();
+
+    showMessage(result.message);
+
+    if (result.success) {
+
+        document
+            .querySelector("#memberModal form")
+            .reset();
+
+        closeModal("memberModal");
+
+        loadMembers();
+        loadStats();
+
+    }
+
+}
+
+
+/* =========================
+   ISSUE
+========================= */
+
+async function issueBook(event) {
+
+    event.preventDefault();
+
+    const data = {
+
+        book_id:
+            document.getElementById(
+                "issueBookId"
+            ).value,
+
+        member_id:
+            document.getElementById(
+                "issueMemberId"
+            ).value
+
+    };
+
+    const response =
+        await fetch(
+            "/api/issue",
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type":
+                        "application/json"
+                },
+
+                body: JSON.stringify(data)
+            }
+        );
+
+    const result =
+        await response.json();
+
+    showMessage(result.message);
+
+    if (result.success) {
+
+        document
+            .querySelector("#issue form")
+            .reset();
+
+        loadStats();
+
+    }
+
+}
+
+
+/* =========================
+   RETURN
+========================= */
+
+async function returnBook(event) {
+
+    event.preventDefault();
+
+    const data = {
+
+        book_id:
+            document.getElementById(
+                "returnBookId"
+            ).value,
+
+        member_id:
+            document.getElementById(
+                "returnMemberId"
+            ).value
+
+    };
+
+    const response =
+        await fetch(
+            "/api/return",
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type":
+                        "application/json"
+                },
+
+                body: JSON.stringify(data)
+            }
+        );
+
+    const result =
+        await response.json();
+
+    showMessage(result.message);
+
+    if (result.success) {
+
+        document
+            .querySelector("#return form")
+            .reset();
+
+        loadStats();
+
+    }
+
+}
+
+
+/* =========================
+   WAITLIST
+========================= */
+
+async function loadWaitlists() {
+
+    const response =
+        await fetch("/api/waitlists");
+
+    const data =
+        await response.json();
+
+    const table =
+        document.getElementById(
+            "waitlistTable"
+        );
+
+    table.innerHTML = "";
+
+    data.forEach(item => {
+
+        const row =
+            document.createElement("tr");
+
+        row.innerHTML = `
+
+            <td>${item.position}</td>
+
+            <td>
+                ${item.title}
+                (${item.book_id})
+            </td>
+
+            <td>
+                ${item.name}
+                (${item.member_id})
+            </td>
+
+        `;
+
+        table.appendChild(row);
+
+    });
+
+}
+
+
+/* =========================
+   TRANSACTIONS
+========================= */
+
+async function loadTransactions() {
+
+    const response =
+        await fetch(
+            "/api/transactions"
+        );
+
+    const data =
+        await response.json();
+
+    const table =
+        document.getElementById(
+            "transactionsTable"
+        );
+
+    table.innerHTML = "";
+
+    data.forEach(item => {
+
+        const row =
+            document.createElement("tr");
+
+        row.innerHTML = `
+
+            <td>
+                <span class="badge transaction">
+                    ${item.transaction_type}
+                </span>
+            </td>
+
+            <td>${item.book_id}</td>
+
+            <td>${item.member_id}</td>
+
+            <td>${item.created_at}</td>
+
+        `;
+
+        table.appendChild(row);
+
+    });
+
+}
+
+
+/* =========================
+   INITIAL LOAD
+========================= */
+
+loadStats();
+
+</script>
+
+</body>
+
+</html>
